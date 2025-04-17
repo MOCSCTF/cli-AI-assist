@@ -1,0 +1,23 @@
+| Timestamp           | Model                          | App     | Input Tokens | Output Tokens | Cost      | Speed (tps) | Provider         |
+|---------------------|--------------------------------|---------|--------------|---------------|-----------|-------------|------------------|
+| Apr 17, 11:35:09 AM   | openai/gpt-4.1-nano            | cli_Ai_assist | 815           | 428               | 0.000253 | 276.8       | OpenAI    |
+| Apr 17, 11:35:05 AM   | openai/gpt-4.1-mini           | cli_Ai_assist | 815           | 430               | 0.00101  | 86.8        | OpenAI    |
+| Apr 17, 11:33:43 AM   | openai/o3-mini               | cli_Ai_assist | 814           | 1,609             | 0.00798  | 190.5       | OpenAI    |
+| Apr 17, 11:33:33 AM   | openai/o3-mini-high            | cli_Ai_assist | 814           | 2,279             | 0.0109   | 141.4       | OpenAI    |
+| Apr 17, 11:32:56 AM   | openai/o4-mini-high           | cli_Ai_assist | 814           | 4,180             | 0.0193   | 108.6       | OpenAI    |
+| Apr 17, 10:40:41 AM | openai/gpt-4.1           | cli_Ai_assist | 815          | 409           | $0.00098  | 125.7       | OpenAI           |
+| Apr 17, 10:40:34 AM | deepseek/deepseek-r1-distill-llama-70b | cli_Ai_assist | 813          | 666           | $0.000364 | 96.0        | DeepInfra        |
+| Apr 17, 10:40:11 AM | qwen/qwen-turbo             | cli_Ai_assist | 815          | 409           | $0.000123 | 110.2       | Alibaba          |
+| Apr 17, 10:40:06 AM | meta-llama/llama-4-scout          | cli_Ai_assist | 810          | 413           | $0.000189 | 99.8        | DeepInfra        |
+| Apr 17, 10:40:00 AM | qwen/qwq-32b                 | cli_Ai_assist | 818          | 2,913         | $0.000705 | 304.8       | DeepInfra        |
+| Apr 17, 10:38:20 AM | qwen/qwen-2.5-72b-instruct           | cli_Ai_assist | 815          | 321           | $0.000234 | 38.3        | Nebius AI Studio |
+| Apr 17, 10:38:09 AM | deepseek/deepseek-chat-v3-0324     | cli_Ai_assist | 837          | 324           | $0.00057  | 11.2        | DeepInfra        |
+| Apr 17, 10:37:38 AM | x-ai/grok-3-mini-beta          | cli_Ai_assist | 806          | 426           | $0.000455 | 111.7       | xAI              |
+| Apr 17, 10:37:22 AM | x-ai/grok-3-beta              | cli_Ai_assist | 805          | 630           | $0.0119   | 36.8        | xAI              |
+| Apr 17, 10:37:02 AM | anthropic/claude-3.7-sonnet:thinking | cli_Ai_assist | 986 | 3,636 | $0.0575   | 449.3       | Google Vertex    |
+| Apr 17, 10:36:11 AM | anthropic/claude-3.7-sonnet   | cli_Ai_assist | 957          | 600           | $0.0119   | 64.4        | Google Vertex    |
+| Apr 17, 10:36:00 AM | mistralai/mistral-7b-instruct-v0.2 | cli_Ai_assist | 997       | 649           | $0.000329 | 222.5       | Together         |
+| Apr 17, 10:35:48 AM | google/gemini-2.5-pro-preview-03-25 | cli_Ai_assist | 877          | 794           | $0.00904  | 124.9       | Google Vertex    |
+| Apr 17, 10:35:33 AM | meta-llama/llama-4-maverick        | cli_Ai_assist | 808          | 582           | $0.000511 | 301.2       | Groq             |
+| Apr 17, 10:35:24 AM | openai/gpt-4o-mini            | cli_Ai_assist | 815          | 357           | $0.000336 | 174.2       | Azure            |
+| Apr 17, 10:35:18 AM | google/gemini-2.0-flash-001      | cli_Ai_assist | 877          | 703           | $0.000369 | 185.1       | Google AI Studio |
