@@ -1,11 +1,12 @@
 | Timestamp           | Model                          | App     | Input Tokens | Output Tokens | Cost      | Speed (tps) | Provider         |
 |---------------------|--------------------------------|---------|--------------|---------------|-----------|-------------|------------------|
+| Apr 17, 11:33:15 AM   | openai/o4-mini            | cli_Ai_assist | 814          | 1277               | 0.00651 | 84.5      | OpenAI    |
 | Apr 17, 11:35:09 AM   | openai/gpt-4.1-nano            | cli_Ai_assist | 815           | 428               | 0.000253 | 276.8       | OpenAI    |
 | Apr 17, 11:35:05 AM   | openai/gpt-4.1-mini           | cli_Ai_assist | 815           | 430               | 0.00101  | 86.8        | OpenAI    |
 | Apr 17, 11:33:43 AM   | openai/o3-mini               | cli_Ai_assist | 814           | 1,609             | 0.00798  | 190.5       | OpenAI    |
 | Apr 17, 11:33:33 AM   | openai/o3-mini-high            | cli_Ai_assist | 814           | 2,279             | 0.0109   | 141.4       | OpenAI    |
 | Apr 17, 11:32:56 AM   | openai/o4-mini-high           | cli_Ai_assist | 814           | 4,180             | 0.0193   | 108.6       | OpenAI    |
-| Apr 17, 10:40:41 AM | openai/gpt-4.1           | cli_Ai_assist | 815          | 409           | $0.00098  | 125.7       | OpenAI           |
+| Apr 17, 10:40:41 AM | openai/gpt-4.1           | cli_Ai_assist | 815          | 489           | 0.00554  | 47.1       | OpenAI           |
 | Apr 17, 10:40:34 AM | deepseek/deepseek-r1-distill-llama-70b | cli_Ai_assist | 813          | 666           | $0.000364 | 96.0        | DeepInfra        |
 | Apr 17, 10:40:11 AM | qwen/qwen-turbo             | cli_Ai_assist | 815          | 409           | $0.000123 | 110.2       | Alibaba          |
 | Apr 17, 10:40:06 AM | meta-llama/llama-4-scout          | cli_Ai_assist | 810          | 413           | $0.000189 | 99.8        | DeepInfra        |
@@ -19,5 +20,5 @@
 | Apr 17, 10:36:00 AM | mistralai/mistral-7b-instruct-v0.2 | cli_Ai_assist | 997       | 649           | $0.000329 | 222.5       | Together         |
 | Apr 17, 10:35:48 AM | google/gemini-2.5-pro-preview-03-25 | cli_Ai_assist | 877          | 794           | $0.00904  | 124.9       | Google Vertex    |
 | Apr 17, 10:35:33 AM | meta-llama/llama-4-maverick        | cli_Ai_assist | 808          | 582           | $0.000511 | 301.2       | Groq             |
-| Apr 17, 10:35:24 AM | openai/gpt-4o-mini            | cli_Ai_assist | 815          | 357           | $0.000336 | 174.2       | Azure            |
+| Apr 17, 10:35:24 AM | openai/gpt-4o-mini           | cli_Ai_assist | 815          | 357           | $0.000336 | 174.2       | Azure            |
 | Apr 17, 10:35:18 AM | google/gemini-2.0-flash-001      | cli_Ai_assist | 877          | 703           | $0.000369 | 185.1       | Google AI Studio |

@@ -69,27 +69,34 @@ ai -b -m models.txt "生成20個隨機ip和機名"
 
 # 針對Openrouter上比較熱門的模型測試(Gemini 2.5 pro 分析生成😁)
 
-## 模型評測分析報告：Bash 日誌分析與 IP 地理位置查詢
+# 模型評測分析報告：Bash 日誌分析與 IP 地理位置查詢
 
 ### 引言
 
-本報告旨在根據提供的基準測試數據 (`生成數據.txt`)、價格信息 (`price.txt`) 以及系統提示 (`systemprompt.txt`)，客觀評估不同 AI 模型在執行特定 Bash 腳本任務時的表現。該任務要求模型生成一個 Bash 命令，用於分析來自指定 URL 的日誌數據，找出請求次數最多的 IP 地址，並查詢該 IP 所屬的國家。評估將涵蓋代碼質量、可讀性、對問題的理解、成本、模型規模、特性、運行結果等多個維度，最終選出表現最佳的 MVP (Minimum Viable Product) 模型，並針對不同優先級提供建議方案。
+本報告旨在根據提供的基準測試數據 (`生成數據.txt`)、價格信息 (`price.txt`) 以及系統提示 (`systemprompt.txt`)，客觀評估不同 AI 模型在執行特定 Bash 腳本任務時的表現。該任務要求模型生成一個 Bash 命令，用於分析來自指定 URL (https://pastebin.com/raw/Mycq5TpC) 的日誌數據，找出請求次數最多的 IP 地址，並查詢該 IP 所屬的國家。評估將涵蓋代碼質量、可讀性、對問題的理解、成本、速度、模型特性、運行結果等多個維度，最終選出表現最佳的 MVP (Minimum Viable Product) 模型，並針對不同優先級提供建議方案。
 
 ### 評估標準
 
-*   **代碼質量 (Code Quality):** 生成的 Bash 命令是否高效、健壯、正確？是否能處理潛在問題（如工具缺失、API 失敗）？是否恰當使用標準工具？
-*   **可讀性與解釋 (Readability/Explanation):** `[explain]` 標籤中的解釋是否清晰易懂？`[command]` 本身是否格式良好？`[context]` 是否準確？
-*   **問題理解 (Problem Understanding):** 模型是否準確理解用戶需求（下載日誌、找 Top IP、查國家）？
-*   **成本 (Cost):** 根據 `price.txt`，生成回應的成本是多少？（部分模型可能無對應成本數據）
-*   **模型規模/特性 (Model Scale/Features):** 模型的大致規模（如 mini, 72b）及其可能具備的特性。
-*   **遵循指示 (Adherence to Prompt):** 是否遵循 `systemprompt.txt` 的結構要求（`[context]`, `[explain]`, `[command]` 標籤）？是否提供了備選方案或安裝說明？
-*   **運行結果 (Execution Result):** `生成數據.txt` 中顯示的命令執行結果是否成功？是否輸出了正確的 IP (95.108.151.244) 和國家 (RU/Russia)？
-*   **執行時間/速度 (Execution Time/Speed):** 模型生成回應所需時間 (`生成數據.txt`)。
-*   **Token 效率 (Token Efficiency):** 相對於任務複雜度，輸出 Token 數量是否合理？
+*   **User prompt:** 顯示在 https://pastebin.com/raw/Mycq5TpC 中哪个IP的请求次数最多及查詢其來自哪個國家
+*   **正確答案:** IP: `95.108.151.244`, 國家: `RU` 或 `Russia` (視查詢工具/API而定)
+
+*   **執行結果 (Execution Result):** 命令是否成功執行？是否返回正確的 IP 和國家？錯誤處理是否得當？ (評分 1-5)
+*   **代碼質量 (Code Quality):**
+    *   **正確性:** 命令邏輯是否能成功完成任務？
+    *   **健壯性:** 能否處理潛在問題（如工具缺失、API 錯誤）？是否優先使用可靠方法 (API vs whois/geoiplookup)?
+    *   **效率:** 命令流程是否簡潔高效？
+    *   **工具選擇:** 是否優先使用標準工具？是否提及或處理了非標準工具（如 `geoiplookup`, `jq`, `whois`）的依賴？
+    *   **語言一致性:** 是否使用用戶提示的語言（繁體中文）？ (評分 1-5)
+*   **可讀性與解釋 (Readability/Explanation):** `[explain]` 標籤中的解釋是否清晰易懂？`[command]` 本身是否格式良好？`[context]` 是否準確？ (評分 1-5)
+*   **運行結果質量 (Result Quality):** 輸出格式是否清晰？是否包含請求的 IP 和國家？
+*   **成本效益 (Cost-Effectiveness):** 每次運行的成本（參考 `price.txt`，若無對應記錄則標註 N/A）。
+*   **速度 (Speed):** 生成時間 (秒, from `生成數據.txt`) 和 Tokens per second (tps, from `price.txt` 作為參考)。
+*   **遵循系統提示 (Adherence to System Prompt):** 是否包含 `[context]`, `[explain]`, `[command]` 標籤？是否提供單一、可執行的命令？是否符合企業級、安全的要求？ (評分 1-5)
+*   **模型特性 (Model Characteristics):** 隱含考慮（如模型大小 Mini/Pro/7B/70B 等）。
 
 ### 數據源
 
-*   `生成數據.txt`: 各模型針對用戶提示的基準測試結果。
+*   `生成數據.txt`: 各模型針對用戶提示的基準測試結果 (包含執行時間、Token數、模型輸出)。
 *   `price.txt`: 部分模型在特定時間點的 API 調用成本、Token 數及速度。
 *   `systemprompt.txt`: 指導 AI 模型回應格式和內容的系統提示。
 
@@ -98,79 +105,83 @@ ai -b -m models.txt "生成20個隨機ip和機名"
 根據上述分析，針對不同需求，推薦以下模型：
 
 1.  **最高性價比 (平衡 - MVP): `openai/gpt-4.1-mini`**
-    *   **理由:** 成功使用可靠的公共 API 解決問題，避免了本地工具依賴。命令簡潔高效，解釋清晰，遵循指示。在所有成功的 API 方案中，成本相對較低 ($0.00101)，生成速度快，輸出 Token 合理。提供了最佳的質量、可靠性與成本的平衡點。
+    *   **理由:** 成功使用可靠的公共 API (`ip-api.com`) 解決問題，避免了本地工具依賴。命令簡潔高效，解釋清晰，遵循指示。在所有成功的 API 方案中，成本相對較低 ($0.00101)，生成速度快 (6.81s)，輸出 Token 合理 (815/430)。提供了最佳的質量、可靠性與成本的平衡點。 **綜合評分: 4.5/5**
 
 2.  **質量優先: `google/gemini-2.5-pro-preview-03-25`**
-    *   **理由:** 生成了高質量的解決方案，使用可靠 API，並在 `awk` 命令中巧妙地嵌入了 `curl` 調用進行國家查詢，無需額外步驟。解釋非常詳細和清晰，對問題理解透徹。雖然成本 ($0.00904) 和執行時間 (23.95s) 相對較高，但優先考慮代碼質量和解釋深度時，它是極佳的選擇。(`openai/o3-mini-high` 作為備選，同樣優秀但成本更高)。
+    *   **理由:** 生成了高質量的解決方案，使用可靠 API (`ipinfo.io`)，並在 `awk` 命令中巧妙地嵌入了 `curl` 調用進行國家查詢，無需額外步驟或變量。解釋非常詳細和清晰，對問題理解透徹，語言符合要求。雖然成本 ($0.00904) 和生成時間 (23.95s) 相對較高，但優先考慮代碼質量和解釋深度時，它是極佳的選擇。 **綜合評分: 4.5/5** (`openai/o3-mini-high` 作為備選，同樣優秀但成本更高 $0.0109)。
 
 3.  **價錢優先: `google/gemini-2.0-flash-001`**
-    *   **理由:** 在所有 *成功執行並返回正確結果* 的模型中，此模型成本最低 ($0.000369)。它使用了 `whois` 命令查詢國家，雖然此方法健壯性不如 API 調用（依賴 `whois` 安裝和輸出格式），但在本次測試環境下是有效的。如果首要目標是盡可能降低成本，並且可以接受 `whois` 的潛在限制，則此模型是首選。如果必須使用 API 且追求低價，`meta-llama/llama-4-maverick` ($0.000511) 是次優選擇，但需要額外安裝 `jq`。
+    *   **理由:** 在所有 *成功執行並返回正確結果* 的模型中，此模型成本最低 ($0.000369)，約節省 2.7 倍於 `openai/gpt-4.1-mini`。它使用了 `whois` 命令查詢國家，雖然此方法健壯性不如 API 調用（依賴 `whois` 安裝和輸出格式的穩定性），但在本次測試環境下是有效的且成功返回 `RU`。如果首要目標是盡可能降低成本，並且可以接受 `whois` 的潛在限制，則此模型是首選。 **綜合評分: 3.5/5** (如果必須使用 API 且追求低價，`meta-llama/llama-4-maverick` ($0.000511) 是次優選擇，但需要額外安裝 `jq`，評分 3.5/5)。
 
 ### 模型表現摘要表
 
-| 模型 (Model)                           | 執行結果 (Execution Result)                  | 代碼質量 (Code Quality) | 可讀性/解釋 (Readability/Explanation) | 成本 (Cost)¹ | 執行時間 (Sec) | Tokens (In/Out) | 備註 (Notes)                                                                 |
-| :------------------------------------- | :------------------------------------------- | :---------------------- | :------------------------------------ | :----------- | :------------- | :-------------- | :--------------------------------------------------------------------------- |
-| google/gemini-2.0-flash-001            | 成功 (whois, RU)                             | 中 (依賴 whois)         | 好                                    | $0.000369    | 6.19           | 877 / 703       | 使用 whois，結果正確。提供了 geoiplookup 作為備選。 **(價錢優先選項)**         |
-| openai/gpt-4o-mini                     | 失敗 (geoiplookup 未找到)                    | 差 (依賴未安裝工具)     | 好                                    | $0.000336    | 4.48           | 815 / 357       | 依賴 geoiplookup，在測試環境中失敗。                                         |
-| google/gemini-2.5-pro-preview-03-25    | 成功 (ipinfo.io API, RU)                     | 好 (API, awk 解析)    | 優                                    | $0.00904     | 23.95          | 877 / 794       | 使用可靠 API，awk 內嵌 curl 調用，解釋詳細，但成本較高、耗時較長。 **(質量優先選項)** |
-| meta-llama/llama-4-maverick            | 成功 (ip-api.com API, Russia, 需 jq)         | 中 (需 jq)            | 好                                    | $0.000511    | 4.78           | 822 / 456       | 使用可靠 API，但依賴額外工具 jq。 (價錢優先的 API 方案備選)                  |
-| mistralai/mistral-7b-instruct-v0.2     | 無命令輸出                                   | 差                      | 無解釋                                | $0.000329    | 5.76           | 997 / 649       | 未能生成有效命令。                                                           |
-| anthropic/claude-3.7-sonnet            | 成功 (ipinfo.com API, RU, 部分成功)²         | 中 (重複 curl)          | 中                                    | $0.0119      | 11.91          | 957 / 600       | 成功輸出 IP 和次數，但國家查詢部分似乎未完整執行或顯示，且重複執行了日誌分析。 |
-| anthropic/claude-3.7-sonnet:thinking   | 成功 (ip-api.com API, Russia)                | 好 (API, 變量存儲)    | 優                                    | $0.0575      | 49.63          | 986 / 3636      | 使用可靠 API，步驟清晰，存儲變量，但成本非常高，耗時長，輸出 Token 多。        |
-| x-ai/grok-3-beta                       | 部分成功 (輸出 "success" 而非國家)           | 差 (解析錯誤)           | 好                                    | $0.0119      | 19.14          | 805 / 630       | IP 和計數正確，但國家解析錯誤，輸出 "success"。成本較高。                      |
-| x-ai/grok-3-mini-beta                  | 無命令輸出                                   | 差                      | 無解釋                                | $0.000455    | 14.27          | 806 / 426       | 未能生成有效命令。                                                           |
-| deepseek/deepseek-chat-v3-0324         | 成功 (whois, RU)                             | 中 (依賴 whois)         | 好                                    | $0.00057     | 31.24          | 837 / 324       | 使用 whois，結果正確，但耗時較長。                                           |
-| qwen/qwen-2.5-72b-instruct           | 失敗 (geoiplookup 未找到)                    | 差 (依賴未安裝工具)     | 好                                    | $0.000234    | 10.30          | 815 / 321       | 依賴 geoiplookup，在測試環境中失敗。                                         |
-| qwen/qwq-32b                           | 成功 (ipinfo.io API, RU)                     | 好 (API, cut 解析)      | 無解釋                                | $0.000705    | 99.18          | 818 / 2913      | 使用可靠 API，結果正確，但執行時間極長，輸出 Token 多，缺少解釋。             |
-| meta-llama/llama-4-scout               | 失敗 (geoiplookup 未找到)                    | 差 (依賴未安裝工具)     | 好                                    | $0.000189    | 6.88           | 810 / 413       | 依賴 geoiplookup，在測試環境中失敗。                                         |
-| qwen/qwen-turbo                        | 失敗 (geoiplookup 未找到)                    | 差 (依賴未安裝工具)     | 好                                    | $0.000123    | 4.91           | 815 / 409       | 依賴 geoiplookup，在測試環境中失敗。成本最低。                               |
-| deepseek/deepseek-r1-distill-llama-70b | 失敗 (geoiplookup 未找到)                    | 差 (依賴未安裝工具)     | 好                                    | $0.000364    | 21.47          | 813 / 666       | 依賴 geoiplookup，在測試環境中失敗。命令包含 `[[ $? -ne 0 ]]` 語法，但在 sh 中可能報錯。 |
-| openai/gpt-4.1                         | 錯誤 (Provider Error 403)                    | N/A                     | N/A                                   | $0.00098     | 1.98           | 815 / 409       | 提供商返回錯誤，無法評估。                                                   |
-| openai/gpt-4.1-mini                    | 成功 (ipinfo.io API, RU) (第二次運行)        | 優 (API, 簡潔)        | 優                                    | $0.00101     | 5.39 / 6.81    | 815 / 409 / 430 | 兩次運行均成功。解釋佳，命令簡潔有效，使用可靠 API。成本適中。 **(性價比選項/MVP)** |
-| openai/o4-mini-high                    | 成功 (whois, RU)                             | 中 (依賴 whois)         | 優                                    | $0.0193      | 39.92          | 814 / 4180      | 使用 whois，結果正確。解釋詳細，遵循指示，但成本高，耗時長，輸出 Token 異常多。 |
-| openai/o3                              | 錯誤 (Provider Error 403)                    | N/A                     | N/A                                   | N/A          | 0.92           | N/A             | 提供商返回錯誤，需要 Key。                                                   |
-| openai/o4-mini                         | 錯誤 (Syntax error: redirection unexpected)  | 差 (語法錯誤)           | 好                                    | N/A          | 16.24          | 814 / 1277      | 嘗試使用 `read` 重定向，產生語法錯誤。                                       |
-| openai/o3-mini-high                    | 成功 (ip-api.com API, Russia)                | 優 (API, grep 解析)     | 優                                    | $0.0109      | 16.97          | 814 / 2279      | 使用可靠 API，grep 解析 JSON，解釋詳細，遵循指示，但成本較高，輸出 Token 較多。 (質量優先選項備選) |
-| openai/o3-mini                         | 成功 (ipinfo.io API, RU)                     | 優 (API, 簡潔)        | 優                                    | $0.00798     | 10.57          | 814 / 1609      | 使用可靠 API，命令簡潔有效，解釋清晰，遵循指示。成本相對較高。                 |
-| openai/gpt-4.1-nano                    | 無命令輸出                                   | 差                      | 無解釋                                | $0.000253    | 3.25           | 815 / 428       | 未能生成有效命令。成本非常低。                                               |
+| 模型 (Model)                           | 執行結果 (評分) | 代碼質量 (評分) | 可讀性/解釋 (評分) | 遵循提示 (評分) | 成本 (Cost)¹ | 生成時間 (秒) | Tokens (In/Out)² | 備註 (Notes)                                                                    |
+| :------------------------------------- | :-------------- | :-------------- | :----------------- | :-------------- | :----------- | :------------ | :-------------- | :------------------------------------------------------------------------------ |
+| google/gemini-2.0-flash-001            | 成功 (4/5)      | 中 (3/5)        | 好 (4/5)           | 好 (4/5)        | $0.000369    | 6.19          | 877 / 703       | 使用 whois (成功, RU)，健壯性稍差。提供了 geoiplookup 作為備選。**價錢優先選項**   |
+| openai/gpt-4o-mini                     | 失敗 (1/5)      | 差 (2/5)        | 好 (4/5)           | 好 (4/5)        | $0.000336    | 4.48          | 815 / 357       | 依賴 geoiplookup (未安裝)。                                                     |
+| google/gemini-2.5-pro-preview-03-25    | 成功 (5/5)      | 優 (5/5)        | 優 (5/5)           | 優 (5/5)        | $0.00904     | 23.95         | 877 / 794       | API (`ipinfo.io`)，awk內嵌curl，解釋詳細，語言正確。成本較高。 **質量優先選項** |
+| meta-llama/llama-4-maverick            | 成功 (3.5/5)    | 中 (3/5)        | 好 (4/5)           | 好 (4/5)        | $0.000511    | 4.78          | 822 / 456       | API (`ip-api.com`, Russia)，需 `jq`。價錢優先的 API 方案備選。                   |
+| mistralai/mistral-7b-instruct-v0.2     | 無命令 (1/5)    | 差 (1/5)        | 無 (1/5)           | 差 (1/5)        | $0.000329    | 5.76          | 997 / 649       | 未能生成有效命令。                                                              |
+| anthropic/claude-3.7-sonnet            | 部分成功 (2/5)  | 中 (2/5)        | 中 (3/5)           | 中 (3/5)        | $0.0119      | 11.91         | 957 / 600       | 成功輸出 IP/次數，國家查詢部分未顯示/有誤。重複`curl`日誌。                          |
+| anthropic/claude-3.7-sonnet:thinking   | 成功 (4/5)      | 好 (4/5)        | 優 (5/5)           | 優 (5/5)        | $0.0575      | 49.63         | 986 / 3636      | API (`ip-api.com`, Russia)，步驟清晰，存變量。成本極高，耗時長，Token 多。       |
+| x-ai/grok-3-beta                       | 部分成功 (2/5)  | 差 (2/5)        | 好 (4/5)           | 好 (4/5)        | $0.0119      | 19.14         | 805 / 630       | IP/計數正確，國家解析錯誤 (`success`)。成本較高。                             |
+| x-ai/grok-3-mini-beta                  | 無命令 (1/5)    | 差 (1/5)        | 無 (1/5)           | 差 (1/5)        | $0.000455    | 14.27         | 806 / 426       | 未能生成有效命令。                                                              |
+| deepseek/deepseek-chat-v3-0324         | 成功 (3/5)      | 中 (3/5)        | 好 (4/5)           | 好 (4/5)        | $0.00057     | 31.24         | 837 / 324       | 使用 whois (成功, RU)，健壯性稍差，耗時較長。                                  |
+| qwen/qwen-2.5-72b-instruct           | 失敗 (1/5)      | 差 (2/5)        | 好 (4/5)           | 好 (4/5)        | $0.000234    | 10.30         | 815 / 321       | 依賴 geoiplookup (未安裝)。                                                     |
+| qwen/qwq-32b                           | 成功 (3/5)      | 中 (3/5)        | 無 (1/5)           | 差 (2/5)        | $0.000705    | 99.18         | 818 / 2913      | API (`ipinfo.io`, RU)，執行時間極長，Token 多，缺解釋/Context。                |
+| meta-llama/llama-4-scout               | 失敗 (1/5)      | 差 (2/5)        | 好 (4/5)           | 好 (4/5)        | $0.000189    | 6.88          | 810 / 413       | 依賴 geoiplookup (未安裝)。                                                     |
+| qwen/qwen-turbo                        | 失敗 (1/5)      | 差 (2/5)        | 好 (4/5)           | 好 (4/5)        | $0.000123    | 4.91          | 815 / 409       | 依賴 geoiplookup (未安裝)。成本最低。                                          |
+| deepseek/deepseek-r1-distill-llama-70b | 失敗 (1/5)      | 差 (1/5)        | 好 (4/5)           | 好 (4/5)        | $0.000364    | 21.47         | 813 / 666       | 依賴 geoiplookup (未安裝)。含 `[[` bashism (可能在 sh 報錯)。                   |
+| openai/gpt-4.1                         | 成功 (4/5)      | 好 (4/5)        | 優 (5/5)           | 優 (5/5)        | $0.00554     | 12.11         | 815 / 489       | 使用 whois (成功, RU)，健壯性稍差。解釋詳細。                                  |
+| openai/o4-mini-high                    | 成功 (3/5)      | 中 (3/5)        | 優 (5/5)           | 優 (5/5)        | $0.0193      | 39.92         | 814 / 4180      | 使用 whois (成功, RU)，健壯性稍差。成本高，耗時長，Token 異常多。              |
+| openai/o4-mini                         | 失敗 (1/5)      | 差 (1/5)        | 好 (4/5)           | 好 (4/5)        | $0.00651     | 16.24         | 814 / 1277      | 語法錯誤 (`read` 重定向)。                                                     |
+| openai/o3-mini-high                    | 成功 (5/5)      | 優 (5/5)        | 優 (5/5)           | 優 (5/5)        | $0.0109      | 16.97         | 814 / 2279      | API (`ip-api.com`, Russia)，`grep` 解析 JSON，解釋詳細。成本較高。(質量備選)   |
+| openai/o3-mini                         | 成功 (5/5)      | 優 (5/5)        | 優 (5/5)           | 優 (5/5)        | $0.00798     | 10.57         | 814 / 1609      | API (`ipinfo.io`, RU)，命令簡潔，解釋清晰。成本相對較高。                      |
+| **openai/gpt-4.1-mini**               | **成功 (5/5)**  | **優 (5/5)**    | **優 (5/5)**       | **優 (5/5)**    | $0.00101     | 6.81          | 815 / 430       | API (`ip-api.com`, Russia)，解釋佳，命令簡潔。 **(MVP)**                        |
+| openai/gpt-4.1-nano                    | 無命令 (1/5)    | 差 (1/5)        | 無 (1/5)           | 差 (1/5)        | $0.000253    | 3.25          | 815 / 428       | 未能生成有效命令。成本低。                                                     |
 
-**註:**
-1.  成本數據來自 `price.txt`，可能與 `生成數據.txt` 中的 Token 數不完全匹配，僅作參考。部分模型無成本數據。
-2.  `claude-3.7-sonnet` 的輸出結果顯示了 IP 和次數，但 `grep country | cut -d '"' -f4` 這部分似乎沒有正確執行或顯示國家。
+**註釋:**  
+¹ 成本數據來自 `price.txt` 中對應模型的記錄（若存在）。這可能不完全代表 `生成數據.txt` 中該次運行的精確成本，但可作為比較參考。N/A 表示 `price.txt` 中未找到對應記錄。  
+² Tokens (In/Out) 數據來自 `生成數據.txt`。
 
 ### 詳細分析
 
-1.  **成功執行的模型:**
-    *   **API 方案:** `google/gemini-2.5-pro-preview-03-25`, `meta-llama/llama-4-maverick` (需 jq), `anthropic/claude-3.7-sonnet:thinking`, `openai/gpt-4.1-mini` (兩次運行), `qwen/qwq-32b`, `openai/o3-mini-high`, `openai/o3-mini` 都成功使用了 `ipinfo.io` 或 `ip-api.com` 等公共 API 查詢國家信息。這通常是最可靠的方法，不受本地工具或數據庫的限制。這些模型生成的日誌分析部分（`curl | awk | sort | uniq | sort | head`）邏輯基本一致且正確。
-    *   **Whois 方案:** `google/gemini-2.0-flash-001`, `deepseek/deepseek-chat-v3-0324`, `openai/o4-mini-high` 使用了 `whois` 命令查詢。雖然在此次測試中成功，但 `whois` 的輸出格式可能不標準化，依賴 `grep` 提取特定字段（如 "country:"）的健壯性相對較差，且 `whois` 工具可能需要單獨安裝。
+1.  **成功執行的模型 (按方法分類):**
+    *   **API 方案 (最優方法):** `google/gemini-2.5-pro-preview-03-25`, `meta-llama/llama-4-maverick` (需 `jq`), `anthropic/claude-3.7-sonnet:thinking`, `openai/gpt-4.1-mini`, `qwen/qwq-32b`, `openai/o3-mini-high`, `openai/o3-mini` 都成功使用了 `ipinfo.io` 或 `ip-api.com` 等公共 API。這是最健壯的方法，不依賴本地工具狀態。
+        *   `gemini-2.5-pro`, `o3-mini-high`, `o3-mini`, `gpt-4.1-mini` 在代碼質量和解釋方面表現突出。
+        *   `qwq-32b` 雖然成功，但解釋缺失且耗時過長。
+        *   `maverick` 需要 `jq` 依賴，但價格較低。
+        *   `sonnet:thinking` 成本過高。
+    *   **Whois 方案 (次優方法):** `google/gemini-2.0-flash-001`, `deepseek/deepseek-chat-v3-0324`, `openai/o4-mini-high`, `openai/gpt-4.1` 使用了 `whois` 命令。本次測試成功，但依賴 `whois` 安裝和其輸出格式穩定性，健壯性不如 API。`flash-001` 成本最低，`o4-mini-high` 成本和 Tokens 數過高，`deepseek` 耗時較長。
 
 2.  **依賴特定工具或失敗的模型:**
-    *   **`geoiplookup` 依賴:** 大量模型（`openai/gpt-4o-mini`, `qwen/qwen-2.5-72b-instruct`, `meta-llama/llama-4-scout`, `qwen/qwen-turbo`, `deepseek/deepseek-r1-distill-llama-70b`）選擇了 `geoiplookup` 工具。然而，該工具並非所有系統預裝，且需要 GeoIP 數據庫。在本次測試環境中，這些命令均因找不到 `geoiplookup` 而失敗。雖然部分模型提示了安裝方法，但直接提供的命令無法運行。
-    *   **解析錯誤:** `x-ai/grok-3-beta` 在解析 API 返回的 JSON 時出錯，未能提取國家名稱。`anthropic/claude-3.7-sonnet` 的國家查詢部分似乎未成功執行或顯示。
-    *   **語法錯誤:** `openai/o4-mini` 使用了 `read` 命令和重定向，導致了 Bash 語法錯誤。
-    *   **無輸出或 Provider 錯誤:** `mistralai/mistral-7b-instruct-v0.2`, `x-ai/grok-3-mini-beta`, `openai/gpt-4.1-nano` 未能生成任何有效命令。`openai/gpt-4.1` 和 `openai/o3` 遇到了提供商錯誤。
+    *   **`geoiplookup` 依賴:** 大量模型（`openai/gpt-4o-mini`, `qwen/qwen-2.5-72b-instruct`, `meta-llama/llama-4-scout`, `qwen/qwen-turbo`, `deepseek/deepseek-r1-distill-llama-70b`）選擇了 `geoiplookup`。此工具非標準預裝，導致命令在測試環境失敗。雖然有些模型提到安裝，但直接提供的命令無法運行。`qwen-turbo` 是其中成本最低的模型。
+    *   **解析/邏輯錯誤:** `x-ai/grok-3-beta` 國家解析錯誤 (`success`)。 `anthropic/claude-3.7-sonnet` 國家部分未顯示，且重複執行日誌獲取部分，效率低。
+    *   **語法錯誤:** `openai/o4-mini` 使用了無效的 `read` 重定向語法。 `deepseek-r1` 的 `[[` 可能在非 Bash shell (如 sh) 下報錯。
+    *   **無輸出或 Provider 錯誤:** `mistralai/mistral-7b-instruct-v0.2`, `x-ai/grok-3-mini-beta`, `openai/gpt-4.1-nano` 未生成命令。
 
 3.  **成本與效率考量:**
-    *   **低成本選項:** `qwen/qwen-turbo` ($0.000123), `meta-llama/llama-4-scout` ($0.000189), `qwen/qwen-2.5-72b-instruct` ($0.000234), `openai/gpt-4.1-nano` ($0.000253), `mistralai/mistral-7b-instruct-v0.2` ($0.000329), `openai/gpt-4o-mini` ($0.000336) 等成本極低，但多數未能成功解決問題（依賴 `geoiplookup` 或無輸出）。
-    *   **中等成本且成功:** `openai/gpt-4.1-mini` ($0.00101) 在成功解決問題的模型中成本相對較低。`meta-llama/llama-4-maverick` ($0.000511) 成本也較低，但需額外安裝 `jq`。
-    *   **高成本選項:** `google/gemini-2.5-pro` ($0.00904), `anthropic/claude-3.7-sonnet` ($0.0119), `x-ai/grok-3-beta` ($0.0119), `openai/o3-mini-high` ($0.0109), `openai/o4-mini-high` ($0.0193), `anthropic/claude-3.7-sonnet:thinking` ($0.0575) 成本顯著更高。其中 `sonnet:thinking`, `o4-mini-high`, `qwq-32b`, `o3-mini-high`, `o3-mini` 的輸出 Token 數量也偏多。
-    *   **執行時間:** `qwen/qwq-32b` (99s), `anthropic/claude-3.7-sonnet:thinking` (49s), `openai/o4-mini-high` (39s), `deepseek/deepseek-chat-v3-0324` (31s), `google/gemini-2.5-pro` (23s) 耗時較長。其他模型大多在 10 秒以內完成生成。
+    *   **低成本:** 許多低成本模型（如 Qwen-Turbo ($0.000123), Llama-Scout ($0.000189), GPT-4.1-nano ($0.000253), GPT-4o-mini ($0.000336)）未能成功執行或依賴缺失工具。`google/gemini-2.0-flash-001` ($0.000369) 是成功的最低成本選項（使用 `whois`）。`meta-llama/llama-4-maverick` ($0.000511) 是成功的最低成本 *API* 選項（需 `jq`）。
+    *   **中成本:** `openai/gpt-4.1-mini` ($0.00101) 在成功且使用 API 的模型中性價比較高。
+    *   **高成本:** `google/gemini-2.5-pro` ($0.00904), `openai/o3-mini` ($0.00798), `openai/o3-mini-high` ($0.0109), `x-ai/grok-3-beta` ($0.0119), `anthropic/claude-3.7-sonnet` ($0.0119), `openai/o4-mini-high` ($0.0193), `anthropic/claude-3.7-sonnet:thinking` ($0.0575) 成本顯著增加。其中 `sonnet:thinking` (3636 tokens), `o4-mini-high` (4180 tokens), `qwq-32b` (2913 tokens) 的輸出 Token 量異常高，`sonnet:thinking` (49s), `o4-mini-high` (39s), `qwq-32b` (99s), `deepseek-chat` (31s), `gemini-2.5-pro` (23s) 生成時間也偏長。
 
 4.  **遵循指示情況:**
-    *   大多數成功運行的模型都較好地遵循了 `systemprompt.txt` 的要求，提供了 `[context]`, `[explain]`, `[command]` 標籤。
-    *   部分模型（如 `qwen/qwq-32b`, `mistralai/mistral-7b`, `x-ai/grok-3-mini`, `openai/gpt-4.1-nano`）未能提供完整的解釋或命令。
-    *   提供備選方案或安裝說明的模型（如 `google/gemini-2.0-flash-001`, `meta-llama/llama-4-maverick`, `deepseek/deepseek-chat-v3-0324`）體現了更好的健壯性考慮。
-
+    *   大多數成功使用 API 或 Whois 的模型（如 `gemini-2.5-pro`, `gpt-4.1-mini`, `o3-mini/high`, `sonnet:thinking`, `gemini-flash`, `o4-mini-high`, `gpt-4.1`）較好地遵循了 `systemprompt.txt` 的要求（標籤、單一命令、解釋）。
+    *   部分模型缺少解釋或 context (`qwq-32b`, `mistral-7b`, `grok-mini`, `gpt-nano`)。
+    *   語言匹配方面，大部分提供中文解釋的模型都使用了繁體中文，符合要求。`openai/gpt-4o-mini`, `x-ai/grok-3-beta`, `openai/o3-mini-high` 的解釋部分使用了英文，未完全遵循提示。
 
 ### 結論
 
-本次評測顯示，不同 AI 模型在處理具體的、帶有實際執行需求的技術任務時，表現差異顯著。
-*   對於需要與外部環境交互（如下載文件、調用 API、檢查本地工具）的任務，模型的選擇對結果的成功率至關重要。
-*   基於公共 API (如 `ipinfo.io`, `ip-api.com`) 的解決方案通常比依賴本地特定工具 (`geoiplookup`, `whois`) 的方案更具通用性和健壯性。
-*   模型成本與性能並非完全正相關，部分中低成本模型（如 `openai/gpt-4.1-mini`）在特定任務上可以達到甚至超過高成本模型的表現。
-*   輸出 Token 數量和生成時間也是評估模型效率的重要指標，部分模型可能過於冗長或耗時過長。
+本次評測顯示，不同 AI 模型在處理需要與外部環境交互（下載文件、調用 API、檢查本地工具）的具體技術任務時，表現差異顯著。
 
-選擇模型時，應根據具體任務需求、對外部依賴的容忍度、預算限制以及對解釋詳細程度的要求進行權衡。以上提供的推薦方案旨在幫助用戶根據自身優先級做出更合適的選擇。
+*   使用公共 API (如 `ipinfo.io`, `ip-api.com`) 的解決方案普遍比依賴本地工具 (`geoiplookup`, `whois`) 的方案更健壯、通用，且不易因環境差異失敗。
+*   許多模型傾向於使用 `geoiplookup`，但在沒有明確告知用戶需要安裝該工具的情況下，這是一個不佳的選擇，導致了大量失敗案例。
+*   模型成本與成功率、代碼質量並非嚴格正相關。中等成本的 `openai/gpt-4.1-mini` 在此任務中表現出色，提供了高性價比。而一些非常便宜的模型則未能完成任務。
+*   輸出 Token 數量和生成時間也是重要考量因素，部分高成本模型（如 `sonnet:thinking`, `o4-mini-high`, `qwq-32b`）可能過於冗長或耗時。
+*   `google/gemini-2.5-pro` 展現了非常高的代碼質量和理解深度，是質量優先場景的有力競爭者。
+*   遵循系統提示（包括語言匹配）也是評估模型是否可靠的重要指標。
+
+選擇模型時，應優先考慮使用 API 進行地理位置查詢的模型以確保健壯性，然後根據預算、對解釋詳細度的要求以及對額外依賴（如 `jq`）的容忍度進行權衡。以上提供的 MVP 和不同優先級推薦方案旨在幫助用戶根據自身需求做出明智選擇。  
 
 
 ## 授權
