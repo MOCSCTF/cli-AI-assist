@@ -40,17 +40,18 @@ ai "用 tar 和 gzip 把 'project' 資料夾壓縮起來。"
 
 ### 範例輸出
 ```plaintext
-Think step:
-1. 確認使用者的作業系統和 Shell 類型。
-2. 決定壓縮格式（例如：tar、zip、7z）。
-3. 檢查有沒有特殊需求（例如：壓縮等級、排除某些檔案）。
-4. 根據需求生成指令。
-5. 確保指令穩健，能處理檔名有空格、隱藏檔案等情況。
-6. 如果有需要，提供替代指令。
-7. 包含作業系統特定的指令。
-8. 提供 **最終的一行指令**，完整又能直接用。
+Running in Bash
+Model: gemini-2.0-flash
+Explain:
+此命令使用 'tar' 建立資料夾的封存檔，並使用 'gzip' 進行壓縮。
 
-command > tar -czvf project.tar.gz "project"
+-c: 建立一個新的封存檔。
+-z: 使用 gzip 壓縮。
+-v: 顯示詳細輸出（可選）。
+-f: 指定輸出檔案名稱 (project.tar.gz)。
+project: 要壓縮的資料夾的名稱。
+Command > tar -czvf project.tar.gz project # 替代方案：gzip -r project | tar -cf project.tar -
+Run command y/n/r(revise)? 
 ```
 
 ## 互動模式
