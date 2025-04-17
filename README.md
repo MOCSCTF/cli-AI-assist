@@ -93,6 +93,19 @@ ai -b -m models.txt "生成20個隨機ip和機名"
 *   `price.txt`: 部分模型在特定時間點的 API 調用成本、Token 數及速度。
 *   `systemprompt.txt`: 指導 AI 模型回應格式和內容的系統提示。
 
+### 不同優先級推薦方案
+
+根據上述分析，針對不同需求，推薦以下模型：
+
+1.  **最高性價比 (平衡 - MVP): `openai/gpt-4.1-mini`**
+    *   **理由:** 成功使用可靠的公共 API 解決問題，避免了本地工具依賴。命令簡潔高效，解釋清晰，遵循指示。在所有成功的 API 方案中，成本相對較低 ($0.00101)，生成速度快，輸出 Token 合理。提供了最佳的質量、可靠性與成本的平衡點。
+
+2.  **質量優先: `google/gemini-2.5-pro-preview-03-25`**
+    *   **理由:** 生成了高質量的解決方案，使用可靠 API，並在 `awk` 命令中巧妙地嵌入了 `curl` 調用進行國家查詢，無需額外步驟。解釋非常詳細和清晰，對問題理解透徹。雖然成本 ($0.00904) 和執行時間 (23.95s) 相對較高，但優先考慮代碼質量和解釋深度時，它是極佳的選擇。(`openai/o3-mini-high` 作為備選，同樣優秀但成本更高)。
+
+3.  **價錢優先: `google/gemini-2.0-flash-001`**
+    *   **理由:** 在所有 *成功執行並返回正確結果* 的模型中，此模型成本最低 ($0.000369)。它使用了 `whois` 命令查詢國家，雖然此方法健壯性不如 API 調用（依賴 `whois` 安裝和輸出格式），但在本次測試環境下是有效的。如果首要目標是盡可能降低成本，並且可以接受 `whois` 的潛在限制，則此模型是首選。如果必須使用 API 且追求低價，`meta-llama/llama-4-maverick` ($0.000511) 是次優選擇，但需要額外安裝 `jq`。
+
 ### 模型表現摘要表
 
 | 模型 (Model)                           | 執行結果 (Execution Result)                  | 代碼質量 (Code Quality) | 可讀性/解釋 (Readability/Explanation) | 成本 (Cost)¹ | 執行時間 (Sec) | Tokens (In/Out) | 備註 (Notes)                                                                 |
@@ -127,25 +140,27 @@ ai -b -m models.txt "生成20個隨機ip和機名"
 
 ### 詳細分析
 
-(與上一版本相同，此處省略以保持簡潔)
+1.  **成功執行的模型:**
+    *   **API 方案:** `google/gemini-2.5-pro-preview-03-25`, `meta-llama/llama-4-maverick` (需 jq), `anthropic/claude-3.7-sonnet:thinking`, `openai/gpt-4.1-mini` (兩次運行), `qwen/qwq-32b`, `openai/o3-mini-high`, `openai/o3-mini` 都成功使用了 `ipinfo.io` 或 `ip-api.com` 等公共 API 查詢國家信息。這通常是最可靠的方法，不受本地工具或數據庫的限制。這些模型生成的日誌分析部分（`curl | awk | sort | uniq | sort | head`）邏輯基本一致且正確。
+    *   **Whois 方案:** `google/gemini-2.0-flash-001`, `deepseek/deepseek-chat-v3-0324`, `openai/o4-mini-high` 使用了 `whois` 命令查詢。雖然在此次測試中成功，但 `whois` 的輸出格式可能不標準化，依賴 `grep` 提取特定字段（如 "country:"）的健壯性相對較差，且 `whois` 工具可能需要單獨安裝。
 
-1.  **成功執行的模型:** (API 方案 vs Whois 方案)
-2.  **依賴特定工具或失敗的模型:** (`geoiplookup` 依賴, 解析錯誤, 語法錯誤, 無輸出)
-3.  **成本與效率考量:** (低成本 vs 中等成本 vs 高成本選項)
-4.  **遵循指示情況:** (標籤使用, 解釋詳細度, 備選方案)
+2.  **依賴特定工具或失敗的模型:**
+    *   **`geoiplookup` 依賴:** 大量模型（`openai/gpt-4o-mini`, `qwen/qwen-2.5-72b-instruct`, `meta-llama/llama-4-scout`, `qwen/qwen-turbo`, `deepseek/deepseek-r1-distill-llama-70b`）選擇了 `geoiplookup` 工具。然而，該工具並非所有系統預裝，且需要 GeoIP 數據庫。在本次測試環境中，這些命令均因找不到 `geoiplookup` 而失敗。雖然部分模型提示了安裝方法，但直接提供的命令無法運行。
+    *   **解析錯誤:** `x-ai/grok-3-beta` 在解析 API 返回的 JSON 時出錯，未能提取國家名稱。`anthropic/claude-3.7-sonnet` 的國家查詢部分似乎未成功執行或顯示。
+    *   **語法錯誤:** `openai/o4-mini` 使用了 `read` 命令和重定向，導致了 Bash 語法錯誤。
+    *   **無輸出或 Provider 錯誤:** `mistralai/mistral-7b-instruct-v0.2`, `x-ai/grok-3-mini-beta`, `openai/gpt-4.1-nano` 未能生成任何有效命令。`openai/gpt-4.1` 和 `openai/o3` 遇到了提供商錯誤。
 
-### 不同優先級推薦方案
+3.  **成本與效率考量:**
+    *   **低成本選項:** `qwen/qwen-turbo` ($0.000123), `meta-llama/llama-4-scout` ($0.000189), `qwen/qwen-2.5-72b-instruct` ($0.000234), `openai/gpt-4.1-nano` ($0.000253), `mistralai/mistral-7b-instruct-v0.2` ($0.000329), `openai/gpt-4o-mini` ($0.000336) 等成本極低，但多數未能成功解決問題（依賴 `geoiplookup` 或無輸出）。
+    *   **中等成本且成功:** `openai/gpt-4.1-mini` ($0.00101) 在成功解決問題的模型中成本相對較低。`meta-llama/llama-4-maverick` ($0.000511) 成本也較低，但需額外安裝 `jq`。
+    *   **高成本選項:** `google/gemini-2.5-pro` ($0.00904), `anthropic/claude-3.7-sonnet` ($0.0119), `x-ai/grok-3-beta` ($0.0119), `openai/o3-mini-high` ($0.0109), `openai/o4-mini-high` ($0.0193), `anthropic/claude-3.7-sonnet:thinking` ($0.0575) 成本顯著更高。其中 `sonnet:thinking`, `o4-mini-high`, `qwq-32b`, `o3-mini-high`, `o3-mini` 的輸出 Token 數量也偏多。
+    *   **執行時間:** `qwen/qwq-32b` (99s), `anthropic/claude-3.7-sonnet:thinking` (49s), `openai/o4-mini-high` (39s), `deepseek/deepseek-chat-v3-0324` (31s), `google/gemini-2.5-pro` (23s) 耗時較長。其他模型大多在 10 秒以內完成生成。
 
-根據上述分析，針對不同需求，推薦以下模型：
+4.  **遵循指示情況:**
+    *   大多數成功運行的模型都較好地遵循了 `systemprompt.txt` 的要求，提供了 `[context]`, `[explain]`, `[command]` 標籤。
+    *   部分模型（如 `qwen/qwq-32b`, `mistralai/mistral-7b`, `x-ai/grok-3-mini`, `openai/gpt-4.1-nano`）未能提供完整的解釋或命令。
+    *   提供備選方案或安裝說明的模型（如 `google/gemini-2.0-flash-001`, `meta-llama/llama-4-maverick`, `deepseek/deepseek-chat-v3-0324`）體現了更好的健壯性考慮。
 
-1.  **最高性價比 (平衡 - MVP): `openai/gpt-4.1-mini`**
-    *   **理由:** 成功使用可靠的公共 API 解決問題，避免了本地工具依賴。命令簡潔高效，解釋清晰，遵循指示。在所有成功的 API 方案中，成本相對較低 ($0.00101)，生成速度快，輸出 Token 合理。提供了最佳的質量、可靠性與成本的平衡點。
-
-2.  **質量優先: `google/gemini-2.5-pro-preview-03-25`**
-    *   **理由:** 生成了高質量的解決方案，使用可靠 API，並在 `awk` 命令中巧妙地嵌入了 `curl` 調用進行國家查詢，無需額外步驟。解釋非常詳細和清晰，對問題理解透徹。雖然成本 ($0.00904) 和執行時間 (23.95s) 相對較高，但優先考慮代碼質量和解釋深度時，它是極佳的選擇。(`openai/o3-mini-high` 作為備選，同樣優秀但成本更高)。
-
-3.  **價錢優先: `google/gemini-2.0-flash-001`**
-    *   **理由:** 在所有 *成功執行並返回正確結果* 的模型中，此模型成本最低 ($0.000369)。它使用了 `whois` 命令查詢國家，雖然此方法健壯性不如 API 調用（依賴 `whois` 安裝和輸出格式），但在本次測試環境下是有效的。如果首要目標是盡可能降低成本，並且可以接受 `whois` 的潛在限制，則此模型是首選。如果必須使用 API 且追求低價，`meta-llama/llama-4-maverick` ($0.000511) 是次優選擇，但需要額外安裝 `jq`。
 
 ### 結論
 
