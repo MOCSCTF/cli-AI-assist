@@ -1,4 +1,3 @@
-#!/bin/python3
 import os
 import re
 import sys
@@ -74,7 +73,7 @@ def __init__():
             Example:
             [context]The user operates in a Linux Bash environment and needs to archive a directory named 'project' in their home directory, compressed with gzip, including hidden files. The directory name contains spaces, requiring proper handling.[/context]
 
-            tag: [explain][/explain] Describe the command or script, including the rationale for its structure. Detail each flag/parameter and address assumptions about the user's environment.
+            tag: [explain][/explain] Describe the command or script, including the rationale for its structure. Detail each flag/parameter/section and address assumptions about the user's environment.
             Example for tar -czvf ~/project.tar.gz -C ~ "project with spaces":
             [explain]The 'tar' command is used for achieving:
 
@@ -177,7 +176,7 @@ def logging():
             f.write(f"{log}]".encode())
         print(f"\033[92mLogging conversation history to {LOG}\033[0m")
     else:
-        if len(conversation_history)>1:
+        if len(conversation_history["conversation"])>1:
             with open(LOG, 'rb+') as f:
                 f.seek(-1, os.SEEK_END)
                 last_char = f.read(1).decode()
@@ -290,7 +289,7 @@ def main():
                         sys.exit(1)
                     additional_content = file.read()
                     prompt += dedent(f"""
-                    reference below additional information at first:
+                    reference below additional information at first translate to my language and then provide the command:
                     {additional_content}""")
         else:
             prompt = " ".join(args.prompt)

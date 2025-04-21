@@ -1,16 +1,16 @@
 [project]
 name = "cli-AI-assist"
-version = "0.1.1"
-description = "Add your description here"
+version = "0.1.6"
+description = "An AI companion to translate human language to command-line instructions."
+authors = [
+    { name = "RB916120", email = "info@mocsctf.com" }
+]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.8"
 dependencies = [
     "dotenv>=0.9.9",
     "openai>=1.72.0",
 ]
-
-[dependency-groups]
-dev = []
 
 [project.scripts]
 ai = "cli_AI_assist:main"
