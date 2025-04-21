@@ -103,11 +103,6 @@ ai --interactive
 ```bash
 ai -b -m models.txt "生成20個隨機ip和機名"
 ```
-### 範例輸出
-```plaintext
-
-
-```
 
 ## 附加說明文件
 附加加強AI的知識庫的說明文件(例如工具的README.md)，讓AI更了解你的需求：
