@@ -167,7 +167,7 @@ def logging():
     Function to set up logger for the AI assistant.
     :return: None
     """
-    print()
+    print("")
     os.makedirs(os.path.dirname(LOG), exist_ok=True)
     if not os.path.exists(LOG):
         with open(LOG, 'wb+') as f:
@@ -176,7 +176,7 @@ def logging():
             f.write(f"{log}]".encode())
         print(f"\033[92mLogging conversation history to {LOG}\033[0m")
     else:
-        if len(conversation_history["conversation"])>1:
+        if len(conversation_history["conversation"])>=1:
             with open(LOG, 'rb+') as f:
                 f.seek(-1, os.SEEK_END)
                 last_char = f.read(1).decode()
