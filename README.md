@@ -115,8 +115,6 @@ ai -a ./README.md 安裝這個專案
 
 # 針對Openrouter上比較熱門的模型測試(Gemini 2.5 pro 分析生成😁)
 
-# 針對 Openrouter 上比較熱門的模型測試報告：Bash 日誌分析與 IP 地理位置查詢
-
 ## 引言
 
 本報告旨在根據提供的基準測試數據 (`生成數據.txt`)、價格信息 (`price.txt`) 以及系統提示 (`systemprompt.txt`)，客觀評估不同 AI 模型在執行特定 Bash 腳本任務時的表現。該任務要求模型生成一個 Bash 命令，用於分析來自指定 URL (`https://pastebin.com/raw/Mycq5TpC`) 的日誌數據，找出請求次數最多的 IP 地址，並查詢該 IP 所屬的國家。評估將涵蓋代碼質量、可讀性與解釋、對問題的理解、成本效益、速度、遵循指示情況以及運行結果等多個維度，最終選出表現最佳的 MVP (Minimum Viable Product) 模型，並針對不同優先級提供建議方案。
