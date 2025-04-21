@@ -1,6 +1,6 @@
 [project]
 name = "cli-AI-assist"
-version = "0.1.6"
+version = "0.1.7"
 description = "An AI companion to translate human language to command-line instructions."
 authors = [
     { name = "RB916120", email = "info@mocsctf.com" }
