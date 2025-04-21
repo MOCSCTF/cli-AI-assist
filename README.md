@@ -2,7 +2,7 @@
 
 CLI AI Assist 是一個 AI 助手，專門幫你把人類語言翻譯成命令列指令。就像一位超有經驗的系統管理員，熟悉 Windows 和 Linux，幫你快速搞定各種檔案壓縮、目錄管理的需求。
 
-** AI 雖然很厲害，但還是有可能出錯，請務必謹慎使用 **
+** AI 雖然很厲害，但還是有可能出錯，請務必謹慎使用及根據實際情況進行調整 **
 
 ## 功能特色
 - 按指示生成 Bash 和 PowerShell 指令。
@@ -13,7 +13,7 @@ CLI AI Assist 是一個 AI 助手，專門幫你把人類語言翻譯成命令�
 - 閱讀附加說明文件，讓 AI 更了解你的需求。
 
 ## 安裝方式
-可先於[openrouter.ai](https://openrouter.ai/)註冊帳號並取得 API 金鑰，然後使用以下步驟安裝：
+可於[openrouter.ai](https://openrouter.ai/)註冊帳號並取得 API 金鑰(目前低於1美金用量前都不收費, 按gemini-2.0-flash 平均2000 Token/次算,約摸可以用2000次)，然後使用以下步驟安裝：
 
 1. 先把專案下載下來：
    ```bash
@@ -22,9 +22,11 @@ CLI AI Assist 是一個 AI 助手，專門幫你把人類語言翻譯成命令�
    ```
 2. 安裝需要的套件：
    ```bash
+    pip install -r requirements.txt
     python setup.py install --user
+    bash --login
    ```
-3. 設定環境變數：
+3. 設定環境變數(如使用openrouter 只需輸入API key 其他default 即可)：
    ```bash
     ai --setup
    ```
@@ -133,11 +135,11 @@ ai -a ./README.md 安裝這個專案
     *   **效率:** 命令流程是否簡潔高效？
     *   **工具選擇:** 是否優先使用標準工具？是否提及或處理了非標準工具（如 `geoiplookup`, `jq`, `whois`）的依賴？
     *   **語言一致性:** 是否使用用戶提示的語言（繁體中文）？ (評分 1-5)
-*   **可讀性與解釋 (Readability/Explanation):** `[explain]` 標籤中的解釋是否清晰易懂？`[command]` 本身是否格式良好？`[context]` 是否準確？ (評分 1-5)
+*   **可讀性與解釋 (Readability/Explanation):** `explain` 標籤中的解釋是否清晰易懂？`command` 本身是否格式良好？`[context]` 是否準確？ (評分 1-5)
 *   **運行結果質量 (Result Quality):** 輸出格式是否清晰？是否包含請求的 IP 和國家？
 *   **成本效益 (Cost-Effectiveness):** 每次運行的成本（參考 `price.txt`，若無對應記錄則標註 N/A）。
 *   **速度 (Speed):** 生成時間 (秒, from `生成數據.txt`) 和 Tokens per second (tps, from `price.txt` 作為參考)。
-*   **遵循系統提示 (Adherence to System Prompt):** 是否包含 `[context]`, `[explain]`, `[command]` 標籤？是否提供單一、可執行的命令？是否符合企業級、安全的要求？ (評分 1-5)
+*   **遵循系統提示 (Adherence to System Prompt):** 是否包含 `context`, `explain`, `command` 標籤？是否提供單一、可執行的命令？是否符合企業級、安全的要求？ (評分 1-5)
 *   **模型特性 (Model Characteristics):** 隱含考慮（如模型大小 Mini/Pro/7B/70B 等）。
 
 ### 數據源
