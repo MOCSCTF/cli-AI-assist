@@ -35,12 +35,41 @@ def __init__():
     
     # Determine the current terminal
     shell_type = "Linux Bash"  # Default value for shell_type
-    if os.getenv('PSModulePath') or os.getenv('ComSpec'):
-        print("Running in Windows")
-        shell_type = """Windows PowerShell(example: Powershell.exe -c "whoami")"""
-    elif os.getenv('SHELL') and 'bash' in os.getenv('SHELL'):
-        print("Running in Bash")
-        shell_type = "Linux Bash"
+    if sys.platform.startswith("win"):
+        # Windows (PowerShell or CMD)
+        if os.getenv('PSModulePath'):
+            print("Running in Windows PowerShell")
+            shell_type = "Windows PowerShell (e.g., powershell.exe -c \"whoami\")"
+        elif os.getenv('ComSpec'):
+            print("Running in Windows CMD")
+            shell_type = "Windows CMD (e.g., cmd.exe /c whoami)"
+        else:
+            print("Running in Windows (unknown shell)")
+            shell_type = "Windows (unknown shell)"
+    elif sys.platform == "darwin":
+        # macOS (Bash or Zsh)
+        shell_env = os.getenv('SHELL', '')
+        if 'zsh' in shell_env:
+            print("Running in macOS Zsh")
+            shell_type = "macOS Zsh"
+        elif 'bash' in shell_env:
+            print("Running in macOS Bash")
+            shell_type = "macOS Bash"
+        else:
+            print("Running in macOS (unknown shell)")
+            shell_type = "macOS (unknown shell)"
+    elif sys.platform.startswith("linux"):
+        # Linux (Bash, Zsh, etc.)
+        shell_env = os.getenv('SHELL', '')
+        if 'bash' in shell_env:
+            print("Running in Linux Bash")
+            shell_type = "Linux Bash"
+        elif 'zsh' in shell_env:
+            print("Running in Linux Zsh")
+            shell_type = "Linux Zsh"
+        else:
+            print("Running in Linux (unknown shell)")
+            shell_type = "Linux (unknown shell)"
     elif os.name == 'posix':
         print("Running in Unix-like environment")
         shell_type = "Unix-like"
