@@ -280,20 +280,25 @@ def interactive_mode(prompt=None):
     Function to run the AI assistant in interactive mode.
     :return: None
     """
-    prompt = prompt or input("Enter your command (or 'exit' to quit): ").strip()
     while True:
+        if not prompt:
+            prompt = input("Enter your command: ").strip()
         response = ai_assistant(prompt)
-        print(f"explain:\n{response.get('explain')}")
-        print(f"\033[93mcommand > {response.get('command')}\033[0m")
-        user_input = input("Run command y/n? ").strip().lower()
-        if user_input == 'y':  # Default to 'y' if no input is provided
+        print(f"Explain:\n{response.get('explain')}")
+        print(f"\033[93mCommand > {response.get('command')}\033[0m")
+        user_input = input("Run command [y]es/[n]o/[r]evise/[q]uit? ").strip().lower()
+        if user_input == 'y':
             os.system(response.get("command"))
+            prompt = None
+        elif user_input == 'r':
+            new_prompt = input("Enter revised prompt: ").strip()
+            prompt = f"Revise the previous command based on: {new_prompt}"
+        elif user_input == 'q':
+            print("Exiting interactive mode.")
+            break
         else:
             print("Command not executed.")
-        prompt = input("Enter your command (or 'exit' to quit): ").strip()
-        if prompt.lower() == 'exit':
-            break
-
+            prompt = None
 
 def main():
     # Check if a prompt is provided via command-line arguments
@@ -357,7 +362,7 @@ def main():
             print(f"Explain:\n{response.get('explain')}")
             print(f"\033[93mCommand > {response.get('command')}\033[0m")
 
-            user_input = input("Run command y/n/r(revise)? ").strip().lower()
+            user_input = input("Run command [y]es/[n]o/[r]evise? ").strip().lower()
             if user_input == 'y':
                 os.system(response.get("command"))
             elif user_input == 'r':  # Revise the prompt
@@ -365,7 +370,7 @@ def main():
                 response = ai_assistant(f"Revise the command based on the following instruction while strictly adhering to pervious rules: {new_prompt}")
                 print(f"Explain:\n{response.get('explain')}")
                 print(f"\033[93mCommand > {response.get('command')}\033[0m")
-                user_input = input("Run command y/n? ").strip().lower()
+                user_input = input("Run command [y]es/[n]o? ").strip().lower()
                 if user_input == 'y':  
                     os.system(response.get("command"))
                 else:
