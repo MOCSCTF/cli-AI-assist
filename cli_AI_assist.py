@@ -275,23 +275,24 @@ def extract_response(response):
 
     return extracted_data
 
-def interactive_mode():
+def interactive_mode(prompt=None):
     """
     Function to run the AI assistant in interactive mode.
     :return: None
     """
+    prompt = prompt or input("Enter your command (or 'exit' to quit): ").strip()
     while True:
-        prompt = input("Enter your command (or 'exit' to quit): ").strip()
-        if prompt.lower() == 'exit':
-            break
         response = ai_assistant(prompt)
         print(f"explain:\n{response.get('explain')}")
         print(f"\033[93mcommand > {response.get('command')}\033[0m")
         user_input = input("Run command y/n? ").strip().lower()
-        if user_input == 'y':  # Dmefault to 'y' if no input is provided
+        if user_input == 'y':  # Default to 'y' if no input is provided
             os.system(response.get("command"))
         else:
             print("Command not executed.")
+        prompt = input("Enter your command (or 'exit' to quit): ").strip()
+        if prompt.lower() == 'exit':
+            break
 
 
 def main():
@@ -345,7 +346,7 @@ def main():
                     sys.exit(1)
             
         elif args.interactive:
-            interactive_mode()
+            interactive_mode(prompt)
             sys.exit(0)
         elif args.setup:
             setup_dotenv(True)
